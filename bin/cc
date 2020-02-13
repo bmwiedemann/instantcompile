@@ -27,12 +27,36 @@ if(!defined($options{o})) {
     }
 }
 
+# read files mentioned in .o files
+# to reduce required IO at runtime
+sub recursive_collect(@);
+sub recursive_collect(@)
+{
+    my @in = @_;
+    my @out = ();
+    for my $i (@in) {
+        #print STDERR "recursive_collect $i\n";
+        if($i =~ /\.o$/) {
+            open(my $fd, "<", $i) or die "could not read $i: $!";
+            my @lines=<$fd>;
+            foreach my $line (@lines) {
+                $line =~ m/^#include "(.*)"/ && push(@out, recursive_collect($1))
+            }
+        }
+        else {
+            push(@out, $i)
+        }
+    }
+    return @out;
+}
+
 sub pseudocompile($$)
 { my ($in, $out)=@_;
     open(my $outfd, ">", $out) or die "error opening $out: $!";
     if($outputmode eq "prog") {
         print $outfd "#!/usr/bin/tcc -run\n";
         chmod(0755, $outfd); # mark executable
+        $in = [recursive_collect(@$in)];
     }
     for my $i (@$in) {
         my $abs = File::Spec->rel2abs($i);

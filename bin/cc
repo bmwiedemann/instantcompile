@@ -39,5 +39,5 @@ sub pseudocompile($$)
     chmod(0755, $outfd); # mark executable
 }
 
-print STDERR "$0 @args -> $options{o}\n";
+#print STDERR "$0 @args -> $options{o}\n";
 pseudocompile(\@args, $options{o});

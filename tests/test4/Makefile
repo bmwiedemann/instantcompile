@@ -1,6 +1,6 @@
 all: test
 test: hello
-	./hello | diff -u - expected.stdout
+	( stat -c %f hello hello.o ; ./hello ) | diff -u - expected.stdout
 hello: hellocompound.o
 	$(CC) -o $@ $^
 hellocompound.o: hello.o hellofunc.o

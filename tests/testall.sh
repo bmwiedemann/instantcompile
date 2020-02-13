@@ -1,12 +1,13 @@
 #!/bin/sh -x
-dirs=$(find -maxdepth 1 -type d -name test\* | sort)
+testdir=$(dirname $(readlink -f $0))
+dirs=$(find $testdir -maxdepth 1 -type d -name 'test[1-9]*' | sort)
 
 for d in $dirs ; do
     echo "running test $d"
     make -C $d clean all || exit $?
 done
 
-export CC=`pwd`/../bin/cc
+export PATH=$testdir/../bin:$PATH
 for d in $dirs ; do
     echo "running test $d"
     make -C $d clean all || exit $?

@@ -6,14 +6,14 @@ our @args=();
 our %options=();
 while (my $i = shift @ARGV) {
     if($i eq "-o") { $options{o}=shift }
-    for my $x (qw(c E S)) {
-        if($i eq "-$x") { $options{$x}=1 }
+    for my $x (qw(c E S r)) {
+        if($i eq "-$x") { $options{$x}=$x }
     }
     if($i !~ m/^-/)
     { push(@args, $i) }
 }
 
-my $outputmode = $options{c}||$options{E}||$options{S}||"prog";
+my $outputmode = $options{c}||$options{E}||$options{S}||$options{r}||"prog";
 
 # determine default output name:
 if(!defined($options{o})) {
